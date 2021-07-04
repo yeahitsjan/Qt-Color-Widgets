@@ -37,13 +37,18 @@ build_all:!build_pass {
  CONFIG += release
 }
 
-#unix {
-#    LIB_TARGET = lib$${TARGET}.so
-#}
+unix {
+    LIB_TARGET = lib$${TARGET}.so
+}
 win32 {
     LIB_TARGET = $${TARGET}.dll
 }
-
+android {
+    OBJECTS_DIR = $$ANDROID_TARGET_ARCH/out/obj
+    MOC_DIR = $$ANDROID_TARGET_ARCH/out/generated
+    UI_DIR = $$ANDROID_TARGET_ARCH/out/generated
+    RCC_DIR = $$ANDROID_TARGET_ARCH/out/generated
+}
 isEmpty(PREFIX) {
     PREFIX = /usr/local
 }
