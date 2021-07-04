@@ -120,7 +120,11 @@ void ColorSelector::showDialog()
     p->old_color = color();
     p->dialog->setColor(color());
     connect_dialog();
+#ifdef Q_OS_ANDROID
+    p->dialog->showMaximized();
+#else
     p->dialog->show();
+#endif
 }
 
 

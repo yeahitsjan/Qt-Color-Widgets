@@ -86,11 +86,13 @@ public:
     void setButtonMode(ButtonMode mode);
     ButtonMode buttonMode() const;
 
-    QSize sizeHint() const;
+    QSize sizeHint() const Q_DECL_OVERRIDE;
 
     ColorWheel::ShapeEnum wheelShape() const;
     ColorWheel::ColorSpaceEnum colorSpace() const;
     bool wheelRotating() const;
+
+    int exec() Q_DECL_OVERRIDE;
 
 public Q_SLOTS:
 
@@ -147,10 +149,11 @@ private Q_SLOTS:
     void on_buttonBox_clicked(QAbstractButton*);
 
 protected:
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dropEvent(QDropEvent * event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event) Q_DECL_OVERRIDE;
+    void dropEvent(QDropEvent * event) Q_DECL_OVERRIDE;
+    void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+    void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+    void keyReleaseEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 
 private:
     class Private;

@@ -32,6 +32,7 @@
 
 #include "QtColorWidgets/color_utils.hpp"
 
+#include <QDebug>
 namespace color_widgets {
 
 class ColorDialog::Private
@@ -46,6 +47,16 @@ public:
     Private() : pick_from_screen(false), alpha_enabled(true)
     {}
 
+#ifdef Q_OS_ANDROID
+    void screen_rotation()
+    {
+        auto scr = QApplication::primaryScreen();
+        if ( scr->size().height() > scr->size().width() )
+            ui.layout_main->setDirection(QBoxLayout::TopToBottom);
+        else
+            ui.layout_main->setDirection(QBoxLayout::LeftToRight);
+    }
+#endif
 };
 
 ColorDialog::ColorDialog(QWidget *parent, Qt::WindowFlags f) :
@@ -55,15 +66,27 @@ ColorDialog::ColorDialog(QWidget *parent, Qt::WindowFlags f) :
 
     setAcceptDrops(true);
 
+#ifdef Q_OS_ANDROID
+    connect(
+        QGuiApplication::primaryScreen(),
+        &QScreen::primaryOrientationChanged,
+        this,
+        [this]{p->screen_rotation();}
+    );
+    p->ui.wheel->setWheelWidth(50);
+    p->screen_rotation();
+#else
     // Add "pick color" button
     QPushButton *pickButton = p->ui.buttonBox->addButton(tr("Pick"), QDialogButtonBox::ActionRole);
     pickButton->setIcon(QIcon::fromTheme(QStringLiteral("color-picker")));
+#endif
 
     setButtonMode(OkApplyCancel);
 
     connect(p->ui.wheel, &ColorWheel::colorSpaceChanged, this, &ColorDialog::colorSpaceChanged);
     connect(p->ui.wheel, &ColorWheel::selectorShapeChanged, this, &ColorDialog::wheelShapeChanged);
     connect(p->ui.wheel, &ColorWheel::rotatingSelectorChanged, this, &ColorDialog::wheelRotatingChanged);
+
 }
 
 ColorDialog::~ColorDialog()
@@ -336,6 +359,19 @@ void ColorDialog::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
+void ColorDialog::keyReleaseEvent(QKeyEvent *ev)
+{
+    QDialog::keyReleaseEvent(ev);
+
+#ifdef Q_OS_ANDROID
+    if ( ev->key() == Qt::Key_Back )
+    {
+        reject();
+        ev->accept();
+    }
+#endif
+}
+
 void ColorDialog::setWheelShape(ColorWheel::ShapeEnum shape)
 {
     p->ui.wheel->setSelectorShape(shape);
@@ -364,6 +400,15 @@ void ColorDialog::setWheelRotating(bool rotating)
 bool ColorDialog::wheelRotating() const
 {
     return p->ui.wheel->rotatingSelector();
+}
+
+int ColorDialog::exec()
+{
+#ifndef Q_OS_ANDROID_FAKE
+    showMaximized();
+    setFocus();
+#endif
+    return QDialog::exec();
 }
 
 } // namespace color_widgets
