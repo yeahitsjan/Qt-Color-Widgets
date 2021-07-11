@@ -90,7 +90,9 @@ QColor ColorPreview::comparisonColor() const
 
 QSize ColorPreview::sizeHint() const
 {
-    return QSize(24,24);
+    int width = style()->pixelMetric(QStyle::PM_IndicatorWidth, nullptr, nullptr);
+    int height = style()->pixelMetric(QStyle::PM_IndicatorHeight, nullptr, nullptr);
+    return QSize(qMax(24, width), qMax(24, height));
 }
 
 void ColorPreview::paint(QPainter &painter, QRect rect) const

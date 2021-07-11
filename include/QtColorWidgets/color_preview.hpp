@@ -73,7 +73,7 @@ public:
     /// Get the comparison color
     QColor comparisonColor() const;
 
-    QSize sizeHint () const;
+    QSize sizeHint () const Q_DECL_OVERRIDE;
 
     void paint(QPainter &painter, QRect rect) const;
 
@@ -100,10 +100,10 @@ Q_SIGNALS:
     void backgroundChanged(const QBrush&);
     void drawFrameChanged(bool);
 protected:
-    void paintEvent(QPaintEvent *);
-    void resizeEvent(QResizeEvent *);
-    void mouseReleaseEvent(QMouseEvent *ev);
-    void mouseMoveEvent(QMouseEvent *ev);
+    void paintEvent(QPaintEvent *) Q_DECL_OVERRIDE;
+    void resizeEvent(QResizeEvent *) Q_DECL_OVERRIDE;
+    void mouseReleaseEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
+    void mouseMoveEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
 
 private:
     class Private;
