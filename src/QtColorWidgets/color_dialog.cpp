@@ -403,7 +403,7 @@ bool ColorDialog::wheelRotating() const
 
 int ColorDialog::exec()
 {
-#ifndef Q_OS_ANDROID_FAKE
+#if defined(Q_OS_ANDROID) && !defined(Q_OS_ANDROID_FAKE)
     showMaximized();
     setFocus();
 #endif
